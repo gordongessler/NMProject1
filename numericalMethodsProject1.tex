@@ -1,12 +1,13 @@
 
 \author{
-        Maciej Sobczyński\\
+        Maciej Sobczynski\\
 }
 \date{\today}
 
-\title{\vspace{-2.0cm}Task 9\\Compute the $LL^T$ factorization of $A$, where $A\subset{\rm I\!R}^{nxn}$ is a tridiagonal and symmetric positive definite. Use this decomposition to solve a system of equations $A^TAx=b$}
+\title{\vspace{-2.0cm}Task 9\\Compute the $LL^T$ factorization of $A$, where $A\in{\rm I\!R}^{nxn}$ is a tridiagonal and symmetric positive definite. Use this decomposition to solve a system of equations $A^TAx=b$}
 \documentclass[12pt]{article}
 \usepackage{listings}  
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}
 \begin{document}
 \lstset{language=Matlab}
 \maketitle
@@ -79,7 +80,7 @@ $$\delta=\alpha_j-\frac{\beta_{j-1}^2}{\delta_{j-1}},\ j=2,...,n\ ,\ l_j=\frac{\
 
 The factorization cannot be completed if any diagonal element $\delta$ is zero. This situation does not occur when A is positive definite.\\
 
-The factorization can be obtained from $D$
+The factorization can be obtained from $D$ in the following fashion
 $$
 A = L^C(L^C)^T
 $$
@@ -106,8 +107,9 @@ The program consists of following files,
 \item \textit{cholesky.m} - A function that performs $LL^T$ decomposition on a tridiagonal and symmetric positive definite matrix. The code is optimised to only calculate factorization for matrices of this type and is not suitable for other matrices.
 \item \textit{examples.m} - A simple script to perform the calculations for provided examples. It calls the \textit{LLT} function on predefined matrices and vectors
 \item \textit{ForwardSub.m} - A simple function to solve a system of linear equations $Ax=b$  where $A$ is lower triangular by forward substitution
-\item \textit{BackwardSub} - A simple function to solve a system of linear equations $Ax=b$
+\item \textit{BackwardSub.m} - A simple function to solve a system of linear equations $Ax=b$
 where $A$ is upper triangular by using backward substitution.
+\item \textit{tridiag.m} - A modified version of the code provided during the laboratories. Creates a tridiagonal matrix where diagonals above and below the main one are identical.
 \end{enumerate}
 The \textit{cholesky.m} and \textit{LLT.m} functions will stop calculations and display an error message if the provided matrix or vector does not fit the conditions. That is, when the vector is not a column vector or it's height is lower than the height of the matrix, when the matrix is not square, tridiagonal, symmetric or positive definite.
 
@@ -117,13 +119,27 @@ $$A = \left(\begin{array}{ccccc} 3 & 1 & 0 & 0 & 0\\ 1 & 3 & 1 & 0 & 0\\ 0 & 1 &
 b = \left(\begin{array}{c} 1\\ 1\\ 1\\ 1\\ 1 \end{array}\right)$$
 $$L = \left(\begin{array}{ccccc} \sqrt{3} & 0 & 0 & 0 & 0\\ \frac{\sqrt{3}}{3} & \frac{2\,\sqrt{2}\,\sqrt{3}}{3} & 0 & 0 & 0\\ 0 & \frac{\sqrt{2}\,\sqrt{3}}{4} & \frac{\sqrt{2}\,\sqrt{21}}{4} & 0 & 0\\ 0 & 0 & \frac{2\,\sqrt{2}\,\sqrt{21}}{21} & \frac{\sqrt{21}\,\sqrt{55}}{21} & 0\\ 0 & 0 & 0 & \frac{\sqrt{21}\,\sqrt{55}}{55} & \frac{12\,\sqrt{55}}{55} \end{array}\right) \
 x=\left(\begin{array}{c} \frac{5}{18}\\ \frac{1}{6}\\ \frac{2}{9}\\ \frac{1}{6}\\ \frac{5}{18} \end{array}\right)$$
+
+Error: $9.3847\e{-17}$ Condition number: $3.7321$
+
 \subsection{Example 2}
 $$A = \left(\begin{array}{cccccccccc} 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 \end{array}\right)\ 
 b = \left(\begin{array}{c} 3\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 3 \end{array}\right)$$
 $$L=\left(\begin{array}{cccccccccc} \sqrt{2} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}\,\sqrt{3}}{2} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & \frac{\sqrt{2}\,\sqrt{3}}{3} & \frac{2\,\sqrt{3}}{3} & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & \frac{\sqrt{3}}{2} & \frac{\sqrt{5}}{2} & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & \frac{2\,\sqrt{5}}{5} & \frac{\sqrt{5}\,\sqrt{6}}{5} & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & \frac{\sqrt{5}\,\sqrt{6}}{6} & \frac{\sqrt{6}\,\sqrt{7}}{6} & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & \frac{\sqrt{6}\,\sqrt{7}}{7} & \frac{2\,\sqrt{2}\,\sqrt{7}}{7} & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & \frac{\sqrt{2}\,\sqrt{7}}{4} & \frac{3\,\sqrt{2}}{4} & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{2\,\sqrt{2}}{3} & \frac{\sqrt{10}}{3} & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{3\,\sqrt{10}}{10} & \frac{\sqrt{10}\,\sqrt{11}}{10} \end{array}\right)\
 x=\left(\begin{array}{c} 1\\ 1\\ 1\\ 1\\ 1\\ 1\\ 1\\ 1\\ 1\\ 1 \end{array}\right)
 $$
+
+Error: $1.1332\e{-16}$ Condition number: $48.3742$
+
 \subsection{Example 3}
+$$A=\left(\begin{array}{cccccc} 5 & 1 & 0 & 0 & 0 & 0\\ 1 & 5 & 2 & 0 & 0 & 0\\ 0 & 2 & 5 & 3 & 0 & 0\\ 0 & 0 & 3 & 5 & 2 & 0\\ 0 & 0 & 0 & 2 & 5 & 1\\ 0 & 0 & 0 & 0 & 1 & 5 \end{array}\right)\
+b=\left(\begin{array}{c} 1\\ 3\\ 4\\ 5\\ 2\\ 0 \end{array}\right)
+$$
+$$
+L=\left(\begin{array}{cccccc} \sqrt{5} & 0 & 0 & 0 & 0 & 0\\ \frac{\sqrt{5}}{5} & \frac{2\,\sqrt{5}\,\sqrt{6}}{5} & 0 & 0 & 0 & 0\\ 0 & \frac{\sqrt{5}\,\sqrt{6}}{6} & \frac{5\,\sqrt{6}}{6} & 0 & 0 & 0\\ 0 & 0 & \frac{3\,\sqrt{6}}{5} & \frac{\sqrt{71}}{5} & 0 & 0\\ 0 & 0 & 0 & \frac{10\,\sqrt{71}}{71} & \frac{\sqrt{71}\,\sqrt{255}}{71} & 0\\ 0 & 0 & 0 & 0 & \frac{\sqrt{71}\,\sqrt{255}}{255} & \frac{2\,\sqrt{255}\,\sqrt{301}}{255} \end{array}\right)\
+x=\left(\begin{array}{c} \frac{23}{301}\\ \frac{186}{301}\\ -\frac{25}{301}\\ \frac{319}{301}\\ -\frac{15}{602}\\ \frac{3}{602} \end{array}\right)
+$$
+Error: $9.8126\e{-17}$ Condition number: $9.5416$
 
 \section{Analysis of results}
 We worked hard, and achieved very little.
@@ -143,6 +159,9 @@ We worked hard, and achieved very little.
 
 \subsection{BackwardSub.m}
 \lstinputlisting{BackwardSub.m}
+
+\subsection{tridiag1.m}
+\lstinputlisting{tridiag1.m}
 \bibliography{main}
 
 \end{document}

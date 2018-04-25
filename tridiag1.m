@@ -1,8 +1,8 @@
-function [A] =tridiag1(a,b,c)
-% [A] =tridiag1(a,b,c)
+function [A] =tridiag1(a,b)
+% [A] =tridiag1(a,b)
 % A is a tridiagonal matrix with diagonal entries a(1),...,a(n)
-% b(1),...,b(n-1) (below a diagonal) and c(1),...,c(n-1) (under a diagonal)
-
+% b(1),...,b(n-1) (below and under a diagonal) 
+c=b;
 a=a(:); b=b(:); c=c(:);
 na=max(size(a));
 nb=max(size(b));

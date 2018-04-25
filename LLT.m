@@ -36,15 +36,17 @@ if(p>0)
 end
 
 %Print condition number of A, as required in appendix
-disp("Condition number of A: ")
-disp(cond(A))
+disp("Condition number of A: ");
+disp(cond(A));
 
 L = cholesky(A);
 
-disp('Error:');
+disp('Decomposition error:');
 error_dec=norm(A-L*L')/norm(A);
 disp(error_dec);
+
 %Solve equations
 y = ForwardSub(L,b);
 x = BackwardSub(transpose(L),y);
+
 
