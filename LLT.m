@@ -23,13 +23,14 @@ if(~isequal(test, zeros(n,n)))
 end
 
 %Symmetric
-if(~isequal(diag(A,1),diag(A,-1)))
+if(~issymmetric(A))
     disp("A is not symmetric.")
     return;
 end
 
 %Positive definite
-if(prod(diag(A))==0||any(diag(A)<0))
+[~,p] = chol(A);
+if(p>0)
     disp("A is not positive definite.")
     return;
 end
