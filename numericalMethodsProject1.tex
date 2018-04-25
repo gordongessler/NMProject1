@@ -1,10 +1,10 @@
 
-\title{\vspace{-2.0cm}Task 9\\Compute the $LL^T$ factorization of $A$, where $A\subset{\rm I\!R}^{nxn}$ is a tridiagonal and symmetric positive definite. Use this decomposition to solve a system of equations $A^TAx=b$}
 \author{
         Maciej Sobczyński\\
 }
 \date{\today}
 
+\title{\vspace{-2.0cm}Task 9\\Compute the $LL^T$ factorization of $A$, where $A\subset{\rm I\!R}^{nxn}$ is a tridiagonal and symmetric positive definite. Use this decomposition to solve a system of equations $A^TAx=b$}
 \documentclass[12pt]{article}
 
 \begin{document}
@@ -62,6 +62,17 @@ l_1 & 1 &   & & \\
 \end{array}
 \right]
 $$
+$$
+D= \left[
+\begin{array}{ccccc}
+\delta_1 &  &  & & \\
+ & \delta_2 &   & & \\
+  & &\ddots& &  \\
+ &  &  & \delta_{n-1} &  \\
+  &  &   &  & \delta_n
+\end{array}
+\right]
+$$
 $$\delta_1=\alpha_1, \ l_1=\frac{\beta_1}{\delta_1}$$
 $$\delta=\alpha_j-\frac{\beta_{j-1}^2}{\delta_{j-1}},\ j=2,...,n\ ,\ l_j=\frac{\beta_j}{\delta_j},\ j=2,...,n-1$$
 
@@ -88,22 +99,34 @@ Once the decomposition is obtained, the system of equations can be solved by sol
 
 
 \section{Program description}
-The program consists of four files,
+The program consists of following files,
 \begin{enumerate}
-\item 
-\item
+\item \textit{LLT.m} - The main function of the program. Can be run with the \textit{LLT(A,b)} command. The function performs $LL^T$ factorization with the help of \textit{cholesky.m} and uses the result of the factorization to solve the system of equations. The function returns the vector of solutions to the system.
+\item \textit{cholesky.m} - A function that performs $LL^T$ decomposition on a tridiagonal and symmetric positive definite matrix. The code is optimised to only calculate factorization for matrices of this type and is not suitable for other matrices.
+\item \textit{examples.m} - A simple script to perform the calculations for provided examples. It calls the \textit{LLT} function on predefined matrices and vectors
+\item \textit{ForwardSub.m} - A simple function to solve a system of linear equations $Ax=b$  where $A$ is lower triangular by forward substitution
+\item \textit{BackwardSub} - A simple function to solve a system of linear equations $Ax=b$
+where $A$ is upper triangular by using backward substitution.
 \end{enumerate}
-
+The \textit{cholesky.m} and \textit{LLT.m} functions will stop calculations and display an error message if the provided matrix or vector does not fit the conditions. That is, when the vector is not a column vector or it's height is lower than the height of the matrix, when the matrix is not square, tridiagonal, symmetric or positive definite.
 
 \section{Numerical examples}
-In this section we describe the results.
+\subsection{Example 1}
+$$A = \left(\begin{array}{ccccc} 3 & 1 & 0 & 0 & 0\\ 1 & 3 & 1 & 0 & 0\\ 0 & 1 & 3 & 1 & 0\\ 0 & 0 & 1 & 3 & 1\\ 0 & 0 & 0 & 1 & 3 \end{array}\right)\ 
+b = \left(\begin{array}{c} 1\\ 1\\ 1\\ 1\\ 1 \end{array}\right)$$
+\subsection{Example 2}
+$$A = \left(\begin{array}{cccccccccc} 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 \end{array}\right)\ 
+b = \left(\begin{array}{c} 3\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 3 \end{array}\right)$$
+\subsection{Example 3}
+$$A = \left(\begin{array}{cccccccccc} \frac{919}{500} & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 1 & \frac{919}{500} & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 1 & \frac{919}{500} & 1 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 1 & \frac{919}{500} & 1 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 1 & \frac{919}{500} & 1 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 1 & \frac{919}{500} & 1 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 1 & \frac{919}{500} & 1 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 1 & \frac{919}{500} & 1 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \frac{919}{500} & 1\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & \frac{919}{500} \end{array}\right)\ 
+b = \left(\begin{array}{c} \frac{1419}{500}\\ \frac{1919}{500}\\ \frac{1919}{500}\\ \frac{1919}{500}\\ \frac{1919}{500}\\ \frac{1919}{500}\\ \frac{1919}{500}\\ \frac{1919}{500}\\ \frac{1919}{500}\\ \frac{1419}{500} \end{array}\right)$$
 
 \section{Analysis of results}
 We worked hard, and achieved very little.
 
 \section{Source code}
 In this section we describe the results.
-\bibliographystyle{abbrv}
+
 \bibliography{main}
 
 \end{document}

@@ -1,14 +1,43 @@
 function [x] = LLT(A,b)
-% a
+% The function solves a system of equations LL^Tx=b 
+% Input variables: 
+% A The tridiagonal and symmetric positive definite matrix. 
+% b A column vector of constants. 
+% Output variable: 
+% A colum vector with the solution.
 
-%A = [3 1 0 0 0;1 3 1 0 0;0 1 3 1 0; 0 0 1 3 1;0 0 0 1 3];
-%b=[1 1 1 1 1];
+%Check conditions
+%Dimensions
+[m,n]=size(A);
+[o,p]=size(b);
+if(m~=n || p ~=1 || o ~=n)
+    disp("Dimensions incorrect.");
+    return;
+end
 
-%A = tridiag1([2 2 2 2 2 2 2 2 2 2],[1 1 1 1 1 1 1 1 1],[1 1 1 1 1 1 1 1 1]);
-%b=[3 4 4 4 4 4 4 4 4 3];
+%Tridiagonal
+test=tril(A,-2) + triu(A,2);
+if(~isequal(test, zeros(n,n)))
+    disp("A is not tridiagonal.")
+    return;
+end
 
-%A = tridiag1([1.838 1.838 1.838 1.838 1.838 1.838 1.838 1.838 1.838 1.838],[1 1 1 1 1 1 1 1 1],[1 1 1 1 1 1 1 1 1]);
-%b=[2.838 3.838 3.838 3.838 3.838 3.838 3.838 3.838 3.838 2.838];
+%Symmetric
+if(~isequal(diag(A,1),diag(A,-1)))
+    disp("A is not symmetric.")
+    return;
+end
+
+%Positive definite
+if(prod(diag(A))==0||any(diag(A)<0))
+    disp("A is not positive definite.")
+    return;
+end
+
+%Print condition number of A, as required in appendix
+disp("Condition number of A: ")
+disp(cond(A))
+
 
 L = cholesky(A);
 

@@ -1,6 +1,11 @@
 function [LC] = cholesky(M)
-%The function finds the Cholesky factiorization of an tridiagonal positive
-%definite matrix
+% The function finds the Cholesky factiorization of an tridiagonal positive
+% definite matrix
+% Input variables: 
+% M The tridiagonal and symmetric positive definite matrix.
+% Output variable: 
+% An lower triangular matrix such that L*L^T = M.
+
 n = length( M );
 D = zeros(n);
 LC = zeros(n);
