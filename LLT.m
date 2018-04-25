@@ -40,7 +40,7 @@ disp(cond(A))
 
 
 L = cholesky(A);
-
 %Solve equations
 y = ForwardSub(L,b);
 x = BackwardSub(transpose(L),y);
+
