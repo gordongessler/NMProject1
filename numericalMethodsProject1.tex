@@ -1,0 +1,111 @@
+
+\title{\vspace{-2.0cm}Task 9\\Compute the $LL^T$ factorization of $A$, where $A\subset{\rm I\!R}^{nxn}$ is a tridiagonal and symmetric positive definite. Use this decomposition to solve a system of equations $A^TAx=b$}
+\author{
+        Maciej Sobczyński\\
+}
+\date{\today}
+
+\documentclass[12pt]{article}
+
+\begin{document}
+\maketitle
+
+\section{Method description}
+
+In this task, we consider only matrices that are tridiagonal and symmetric positive definite. This means that the matrices have non-zero elements only on the main diagonal and the first diagonals below and above the main one. Because the matrices considered are symmetric values on both diagonals next to the main diagonal have to be equal. Therefore the matrices considered in this task take the following form
+
+$$
+A= \left[
+\begin{array}{ccccc}
+\alpha_1 & \beta_1 & 0 &\cdots&0\\
+\beta_1 & \alpha_2 & \beta_2 & &\vdots\\
+0 &\ddots&\ddots&\ddots& 0\\
+\vdots&  & \beta_{n-2} & \alpha_{n-1} & \beta_{n-1}\\
+0 & \cdots& 0 & \beta_{n-1} & \alpha_n
+\end{array}
+\right]
+$$
+
+The task is to perform $LL^T$ (Cholesky) factorization on the matrix A and use the factorization to solve a system of equations $A^TAx=b$ where 
+
+$$
+x=\left(
+\begin{array}{c}
+x_1\\
+x_2\\
+\vdots\\
+x_n\\
+\end{array}
+\right)
+\ \
+b=\left(
+\begin{array}{c}
+b_1\\
+b_2\\
+\vdots\\
+b_n\\
+\end{array}
+\right)
+$$
+
+The factorization is obtained in the following way\\
+
+Let $D$ be $n$x$n$ diagonal matrix with diagonal elements $\delta_j$ for $j = 1,...,n$ and
+$$
+L= \left[
+\begin{array}{ccccc}
+1 &  &  & & \\
+l_1 & 1 &   & & \\
+  &\ddots&\ddots& &  \\
+ &  & l_{n-2} & 1 &  \\
+  &  &   & l_{n-1} & 1
+\end{array}
+\right]
+$$
+$$\delta_1=\alpha_1, \ l_1=\frac{\beta_1}{\delta_1}$$
+$$\delta=\alpha_j-\frac{\beta_{j-1}^2}{\delta_{j-1}},\ j=2,...,n\ ,\ l_j=\frac{\beta_j}{\delta_j},\ j=2,...,n-1$$
+
+The factorization cannot be completed if any diagonal element $\delta$ is zero. This situation does not occur when A is positive definite.\\
+
+The factorization can be obtained from $D$
+$$
+A = L^C(L^C)^T
+$$
+Where $L^C=L+D^{\frac{1}{2}}$
+$$
+L^C = \left[
+\begin{array}{ccccc}
+\sqrt{\delta_1} &  &  & & \\
+\frac{\beta_1}{\sqrt{\delta_1}} & \sqrt{\delta_2} &   & & \\
+  &\ddots&\ddots& &  \\
+ &  & \frac{\beta_{n-2}}{\sqrt{\delta_{n-2}}} & \sqrt{\delta_{n-1}} &  \\
+  &  &   & \frac{\beta_{n-1}}{\sqrt{\delta_{n-1}}} & \sqrt{\delta_n}
+\end{array}
+\right]
+$$
+
+Once the decomposition is obtained, the system of equations can be solved by solving $L^Cy=b$ for $y$ by forward substitution, and $(L^C)^Tx=y$ for $x$ by back substitution to get the final result.                  
+
+
+\section{Program description}
+The program consists of four files,
+\begin{enumerate}
+\item 
+\item
+\end{enumerate}
+
+
+\section{Numerical examples}
+In this section we describe the results.
+
+\section{Analysis of results}
+We worked hard, and achieved very little.
+
+\section{Source code}
+In this section we describe the results.
+\bibliographystyle{abbrv}
+\bibliography{main}
+
+\end{document}
+This is never printed
+  
