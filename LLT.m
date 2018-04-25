@@ -38,8 +38,11 @@ end
 disp("Condition number of A: ")
 disp(cond(A))
 
-
 L = cholesky(A);
+
+disp('Error:');
+error_dec=norm(A-L*L')/norm(A);
+disp(error_dec);
 %Solve equations
 y = ForwardSub(L,b);
 x = BackwardSub(transpose(L),y);
