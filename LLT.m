@@ -1,10 +1,18 @@
-function [x] = LLT(A,b)
+function [x] = LLT(A,b,ex)
 % The function solves a system of equations LL^Tx=b 
 % Input variables: 
 % A The tridiagonal and symmetric positive definite matrix. 
 % b A column vector of constants. 
+% ex An exact solution. 
 % Output variable: 
 % A colum vector with the solution.
+% If an exact solution is not provided, the result of linsolve(A*A,b)
+% will be used instead of it
+
+if (~exist('ex', 'var'))
+        ex = linsolve(A*A,b);
+end
+B=A*A*ex;
 
 %Check conditions
 %Dimensions
@@ -35,18 +43,35 @@ if(p>0)
     return;
 end
 
-%Print condition number of A, as required in appendix
+L = cholesky(A);
+
+%Solve equations
+y = L'\b;
+z = L*L\y;
+x = L'\z;
+
 disp("Condition number of A: ");
 disp(cond(A));
 
-L = cholesky(A);
+
+disp("Condition number of A^2: ");
+disp(cond(A)^2);
 
 disp('Decomposition error:');
 error_dec=norm(A-L*L')/norm(A);
 disp(error_dec);
 
-%Solve equations
-y = ForwardSub(L,b);
-x = BackwardSub(transpose(L),y);
+disp('Relative error:');
+error1=norm(x-ex)/norm(ex);
+disp(error1);
 
+disp('Forward stability error:');
+error2=error1/cond(A)^2;
+disp(error2);
+
+disp('Backward stability error:');
+error3=norm(B-A*A*x)/(norm(A*A)*norm(x));
+disp(error3);
+
+end
 

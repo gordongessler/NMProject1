@@ -97,53 +97,152 @@ L^C = \left[
 \right]
 $$
 
-Once the decomposition is obtained, the system of equations can be solved by solving $L^Cy=b$ for $y$ by forward substitution, and $(L^C)^Tx=y$ for $x$ by back substitution to get the final result.                  
+Once the decomposition is obtained, the system of equations can be solved in a similar fashion to regular $Ax=b$ system by simply using three forward / back substitutions instead of the usual two, noting that $L^2$ is also triangular:
+$$A^T A x = L^T L^2 L^T x = b$$
+Forward substitute to get $y$:$$\quad  L^T y = b,\ y = L^2 L^T x$$
+Backward substitute to get $z$:$$\quad  L^2 z = y, \ z = L^T x$$
+Forward substitute to get $x$:$$\quad  L^T x = z$$
 
 
 \section{Program description}
 The program consists of following files,
 \begin{enumerate}
-\item \textit{LLT.m} - The main function of the program. Can be run with the \textit{LLT(A,b)} command. The function performs $LL^T$ factorization with the help of \textit{cholesky.m} and uses the result of the factorization to solve the system of equations. The function returns the vector of solutions to the system.
+\item \textit{LLT.m} - The main function of the program. Can be run with the \textit{LLT(A,b,ex)} command. The function performs $LL^T$ factorization with the help of \textit{cholesky.m} and uses the result of the factorization to solve the system of equations. The function returns the vector of solutions to the system. If an exact solution is not provided, the result of \textit{linsolve(A*A,b)} will be used instead of it
 \item \textit{cholesky.m} - A function that performs $LL^T$ decomposition on a tridiagonal and symmetric positive definite matrix. The code is optimised to only calculate factorization for matrices of this type and is not suitable for other matrices.
 \item \textit{examples.m} - A simple script to perform the calculations for provided examples. It calls the \textit{LLT} function on predefined matrices and vectors
-\item \textit{ForwardSub.m} - A simple function to solve a system of linear equations $Ax=b$  where $A$ is lower triangular by forward substitution
-\item \textit{BackwardSub.m} - A simple function to solve a system of linear equations $Ax=b$
-where $A$ is upper triangular by using backward substitution.
+\item \textit{triPosDef.m} - A simple function to generate a random tridiagonal symmetric 
+positive definite $n$ by $n$ matrix;
 \item \textit{tridiag.m} - A modified version of the code provided during the laboratories. Creates a tridiagonal matrix where diagonals above and below the main one are identical.
 \end{enumerate}
-The \textit{cholesky.m} and \textit{LLT.m} functions will stop calculations and display an error message if the provided matrix or vector does not fit the conditions. That is, when the vector is not a column vector or it's height is lower than the height of the matrix, when the matrix is not square, tridiagonal, symmetric or positive definite.
+The \textit{LLT.m} function will stop calculations and display an error message if the provided matrix or vector does not fit the conditions. That is, when the vector is not a column vector or it's height is lower than the height of the matrix, when the matrix is not square, tridiagonal, symmetric or positive definite.
 
 \section{Numerical examples}
 \subsection{Example 1}
 $$A = \left(\begin{array}{ccccc} 3 & 1 & 0 & 0 & 0\\ 1 & 3 & 1 & 0 & 0\\ 0 & 1 & 3 & 1 & 0\\ 0 & 0 & 1 & 3 & 1\\ 0 & 0 & 0 & 1 & 3 \end{array}\right)\ 
 b = \left(\begin{array}{c} 1\\ 1\\ 1\\ 1\\ 1 \end{array}\right)$$
-$$L = \left(\begin{array}{ccccc} \sqrt{3} & 0 & 0 & 0 & 0\\ \frac{\sqrt{3}}{3} & \frac{2\,\sqrt{2}\,\sqrt{3}}{3} & 0 & 0 & 0\\ 0 & \frac{\sqrt{2}\,\sqrt{3}}{4} & \frac{\sqrt{2}\,\sqrt{21}}{4} & 0 & 0\\ 0 & 0 & \frac{2\,\sqrt{2}\,\sqrt{21}}{21} & \frac{\sqrt{21}\,\sqrt{55}}{21} & 0\\ 0 & 0 & 0 & \frac{\sqrt{21}\,\sqrt{55}}{55} & \frac{12\,\sqrt{55}}{55} \end{array}\right) \
-x=\left(\begin{array}{c} \frac{5}{18}\\ \frac{1}{6}\\ \frac{2}{9}\\ \frac{1}{6}\\ \frac{5}{18} \end{array}\right)$$
 
-Error: $9.3847\e{-17}$ Condition number: $3.7321$
+Condition number of A: 3.7321
+
+Condition number of $A^2$: 13.9282
+
+Decomposition error: 9.3847\e{-17}
+
+Relative error: 0.1816
+
+Forward stability error: 0.0130
+
+Backward stability error: 0.0405
 
 \subsection{Example 2}
 $$A = \left(\begin{array}{cccccccccc} 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 1\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 \end{array}\right)\ 
 b = \left(\begin{array}{c} 3\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 4\\ 3 \end{array}\right)$$
-$$L=\left(\begin{array}{cccccccccc} \sqrt{2} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}\,\sqrt{3}}{2} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & \frac{\sqrt{2}\,\sqrt{3}}{3} & \frac{2\,\sqrt{3}}{3} & 0 & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & \frac{\sqrt{3}}{2} & \frac{\sqrt{5}}{2} & 0 & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & \frac{2\,\sqrt{5}}{5} & \frac{\sqrt{5}\,\sqrt{6}}{5} & 0 & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & \frac{\sqrt{5}\,\sqrt{6}}{6} & \frac{\sqrt{6}\,\sqrt{7}}{6} & 0 & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & \frac{\sqrt{6}\,\sqrt{7}}{7} & \frac{2\,\sqrt{2}\,\sqrt{7}}{7} & 0 & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & \frac{\sqrt{2}\,\sqrt{7}}{4} & \frac{3\,\sqrt{2}}{4} & 0 & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{2\,\sqrt{2}}{3} & \frac{\sqrt{10}}{3} & 0\\ 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & \frac{3\,\sqrt{10}}{10} & \frac{\sqrt{10}\,\sqrt{11}}{10} \end{array}\right)\
-x=\left(\begin{array}{c} 1\\ 1\\ 1\\ 1\\ 1\\ 1\\ 1\\ 1\\ 1\\ 1 \end{array}\right)
-$$
 
-Error: $1.1332\e{-16}$ Condition number: $48.3742$
+Condition number of A: 
+   48.3742
+
+Condition number of $A^2$: 
+   2.3401\e{3}
+
+Decomposition error:
+   1.1332\e{-16}
+
+Relative error:
+   49.0085
+
+Forward stability error:
+    0.0209
+
+Backward stability error:
+    0.0053
 
 \subsection{Example 3}
 $$A=\left(\begin{array}{cccccc} 5 & 1 & 0 & 0 & 0 & 0\\ 1 & 5 & 2 & 0 & 0 & 0\\ 0 & 2 & 5 & 3 & 0 & 0\\ 0 & 0 & 3 & 5 & 2 & 0\\ 0 & 0 & 0 & 2 & 5 & 1\\ 0 & 0 & 0 & 0 & 1 & 5 \end{array}\right)\
 b=\left(\begin{array}{c} 1\\ 3\\ 4\\ 5\\ 2\\ 0 \end{array}\right)
 $$
-$$
-L=\left(\begin{array}{cccccc} \sqrt{5} & 0 & 0 & 0 & 0 & 0\\ \frac{\sqrt{5}}{5} & \frac{2\,\sqrt{5}\,\sqrt{6}}{5} & 0 & 0 & 0 & 0\\ 0 & \frac{\sqrt{5}\,\sqrt{6}}{6} & \frac{5\,\sqrt{6}}{6} & 0 & 0 & 0\\ 0 & 0 & \frac{3\,\sqrt{6}}{5} & \frac{\sqrt{71}}{5} & 0 & 0\\ 0 & 0 & 0 & \frac{10\,\sqrt{71}}{71} & \frac{\sqrt{71}\,\sqrt{255}}{71} & 0\\ 0 & 0 & 0 & 0 & \frac{\sqrt{71}\,\sqrt{255}}{255} & \frac{2\,\sqrt{255}\,\sqrt{301}}{255} \end{array}\right)\
-x=\left(\begin{array}{c} \frac{23}{301}\\ \frac{186}{301}\\ -\frac{25}{301}\\ \frac{319}{301}\\ -\frac{15}{602}\\ \frac{3}{602} \end{array}\right)
-$$
-Error: $9.8126\e{-17}$ Condition number: $9.5416$
+
+Condition number of A: 
+    9.5416
+
+Condition number of $A^2$: 
+   91.0415
+
+Decomposition error:
+   9.8126\e{-17}
+
+Relative error:
+    0.2944
+
+Forward stability error:
+    0.0032
+
+Backward stability error:
+    0.0157
+
 \subsection{Example 4}
-A is a random nxn matrix
+A is a random $10x10$ tridiagonal and symmetric positive definite matrix and $$b=\left(\begin{array}{c} 1\\ 2\\ \vdots\\ 10 \end{array}\right)$$ 
+
+Condition number of A: 
+   16.5097
+
+Condition number of $A^2$: 
+  272.5689
+
+Decomposition error:
+   3.5351\e{-17}
+
+Relative error:
+    0.2770
+
+Forward stability error:
+    0.0025
+
+Backward stability error:
+    0.0172
+
+\subsection{Example 5}
+A is a random $100x100$ tridiagonal and symmetric positive definite matrix and $$b=\left(\begin{array}{c} 1\\ 2\\ \vdots\\ 100 \end{array}\right)$$ 
+
+Condition number of A: 
+   39.5692
+
+Condition number of $A^2$: 
+   1.5657\e3
+
+Decomposition error:
+   1.1071\e{-16}
+
+Relative error:
+    0.4910
+
+Forward stability error:
+    2.7992\e{-04}
+
+Backward stability error:
+    0.0055
+
+\subsection{Example 6}
+A is a random $1000x1000$ tridiagonal and symmetric positive definite matrix and $$b=\left(\begin{array}{c} 1\\ 2\\ \vdots\\ 1000 \end{array}\right)$$ 
+
+Condition number of A: 
+   69.4416
+
+Condition number of$ A^2$: 
+   4.8221\e3
+
+Decomposition error:
+   9.4986\e{-17}
+
+Relative error:
+    0.4134
+
+Forward stability error:
+    3.6735\e(-05)
+
+Backward stability error:
+    0.0018
+
 \section{Analysis of results}
-We worked hard, and achieved very little.
+The program overall returns pretty accurate results (in example 2 the results are very much inaccurate). The decomposition error for the Cholesky decomposition implemented in this program is usually lower than in the built in function \textit{chol}. Other than that all tested errors are reasonable. 
 
 \section{Source code}
 \subsection{LTT.m}
@@ -155,16 +254,12 @@ We worked hard, and achieved very little.
 \subsection{examples.m}
 \lstinputlisting{examples.m}
 
-\subsection{ForwardSub.m}
-\lstinputlisting{ForwardSub.m}
-
-\subsection{BackwardSub.m}
-\lstinputlisting{BackwardSub.m}
+\subsection{triPosDef.m}
+\lstinputlisting{triPosDef.m}
 
 \subsection{tridiag1.m}
 \lstinputlisting{tridiag1.m}
 \bibliography{main}
 
 \end{document}
-This is never printed
   
